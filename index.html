@@ -1,1106 +1,1617 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0f14">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="/SECONDO/icon-192.png">
-<link rel="manifest" href="/SECONDO/manifest.webmanifest">
-<link rel="icon" href="/SECONDO/icon-192.png" type="image/png">
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color" content="#111827">
+
 <title>SECONDO</title>
 
+<link rel="manifest"
+href="/SECONDO/manifest.webmanifest">
+
 <style>
-:root{
---bg:#0b0f14;
---card:#141a22;
---muted:#9aa6b2;
---text:#f5f7fa;
---accent:#6ee7ff;
---green:#55d68a;
---danger:#ff6b6b;
---line:#26313d
+
+*{
+box-sizing:border-box;
 }
-*{box-sizing:border-box}
+
 body{
 margin:0;
-font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-background:var(--bg);
-color:var(--text)
+font-family:Arial,sans-serif;
+background:#f3f4f6;
+color:#111827;
 }
+
 header{
-padding:22px 18px 12px;
-display:flex;
-justify-content:space-between;
-align-items:center
-}
-h1{margin:0;font-size:28px}
-main{padding:0 16px 95px}
-.hero{
-background:linear-gradient(145deg,#17212d,#10161e);
-border:1px solid #253241;
-border-radius:24px;
-padding:22px;
-margin:10px 0 16px
-}
-.status{color:var(--green);font-size:13px}
-.ask{
-width:100%;
-padding:20px;
-border:0;
-border-radius:18px;
-background:#e9faff;
-color:#071018;
-font-size:18px;
-font-weight:700;
-margin-top:14px
-}
-.card{
-background:var(--card);
-border:1px solid #222c38;
-border-radius:18px;
-padding:17px;
-margin:12px 0
-}
-.label{
-font-size:11px;
-letter-spacing:.12em;
-color:var(--muted);
-margin-bottom:8px
-}
-.nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#0e141b;
-border-top:1px solid var(--line);
-display:grid;
-grid-template-columns:repeat(5,1fr);
-padding:7px 4px calc(7px + env(safe-area-inset-bottom));
-z-index:5
-}
-.nav button{
-background:none;
-border:0;
-color:#9da8b5;
-font-size:11px;
-padding:8px 2px
-}
-.nav button.active{color:var(--accent)}
-button{cursor:pointer}
-.small{
-color:var(--muted);
-font-size:14px;
-line-height:1.45
-}
-.pill{
-display:inline-block;
-padding:5px 9px;
-border-radius:999px;
-background:#263545;
-color:#cfefff;
-font-size:12px;
-margin:5px 4px 0 0
-}
-input,textarea{
-width:100%;
-background:#0d131a;
+background:#111827;
 color:white;
-border:1px solid #2a3745;
-border-radius:12px;
-padding:13px;
-font:inherit
+padding:20px;
+text-align:center;
 }
-textarea{min-height:110px}
+
+header h1{
+margin:0;
+font-size:30px;
+}
+
+header p{
+margin:6px 0 0;
+opacity:.8;
+}
+
+nav{
+display:flex;
+background:white;
+border-bottom:1px solid #ddd;
+position:sticky;
+top:0;
+z-index:10;
+}
+
+nav button{
+flex:1;
+padding:14px 5px;
+border:0;
+background:white;
+font-size:13px;
+cursor:pointer;
+}
+
+nav button.active{
+font-weight:bold;
+color:#2563eb;
+border-bottom:3px solid #2563eb;
+}
+
+main{
+padding:18px;
+max-width:700px;
+margin:auto;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:18px;
+margin-bottom:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.07);
+}
+
+.hero{
+text-align:center;
+padding:30px 20px;
+}
+
+.hero h2{
+font-size:28px;
+margin-top:0;
+}
+
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#dcfce7;
+color:#166534;
+font-size:13px;
+margin-bottom:15px;
+}
+
+.voiceBtn{
+width:130px;
+height:130px;
+border-radius:50%;
+border:0;
+background:#2563eb;
+color:white;
+font-size:45px;
+cursor:pointer;
+box-shadow:0 8px 25px rgba(37,99,235,.35);
+}
+
+.voiceBtn.listening{
+background:#dc2626;
+animation:pulse 1.3s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.06);}
+100%{transform:scale(1);}
+}
+
+.voiceText{
+margin-top:15px;
+font-size:14px;
+color:#6b7280;
+min-height:20px;
+}
+
+textarea{
+width:100%;
+min-height:90px;
+padding:12px;
+border:1px solid #d1d5db;
+border-radius:12px;
+font-size:16px;
+resize:vertical;
+}
+
+.primary{
+background:#2563eb;
+color:white;
+border:0;
+padding:12px 18px;
+border-radius:10px;
+font-size:15px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.secondary{
+background:#e5e7eb;
+color:#111827;
+border:0;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.danger{
+background:#dc2626;
+color:white;
+border:0;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.item{
+border:1px solid #e5e7eb;
+border-radius:14px;
+padding:15px;
+margin-bottom:10px;
+}
+
+.itemTitle{
+font-weight:bold;
+font-size:17px;
+margin-bottom:6px;
+}
+
+.itemSmall{
+font-size:13px;
+color:#6b7280;
+line-height:1.5;
+}
+
+.empty{
+text-align:center;
+color:#6b7280;
+padding:25px 10px;
+}
+
 .modal{
+display:none;
 position:fixed;
 inset:0;
-background:#0009;
-display:none;
-align-items:end;
-z-index:10
-}
-.sheet{
-background:#121922;
-border-radius:22px 22px 0 0;
+background:rgba(0,0,0,.55);
+z-index:100;
+align-items:center;
+justify-content:center;
 padding:20px;
+}
+
+.modalBox{
+background:white;
+border-radius:18px;
+padding:22px;
+max-width:500px;
 width:100%;
-border-top:1px solid #304052;
-max-height:90vh;
-overflow:auto
 }
-.sheet button{
-padding:13px;
-border-radius:12px;
+
+.modalBox h3{
+margin-top:0;
+}
+
+.close{
+float:right;
 border:0;
-margin-top:10px;
-width:100%
+background:none;
+font-size:25px;
+cursor:pointer;
 }
-.primary{background:#dff9ff;color:#071018}
-.secondary{background:#25313f;color:#fff}
-.item{
+
+.setting{
 padding:14px 0;
-border-bottom:1px solid #25303b
+border-bottom:1px solid #eee;
 }
-.item:last-child{border-bottom:0}
-.action{
-margin-top:9px;
-padding:9px 12px;
-border:0;
-border-radius:10px;
-background:#25313f;
-color:white
+
+.install{
+display:none;
+margin-top:15px;
 }
-.empty{
-padding:18px 0;
-color:var(--muted)
+
+.small{
+font-size:13px;
+color:#6b7280;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <header>
+
 <h1>SECONDO</h1>
-<span class="status">● Connesso</span>
+
+<p>La tua memoria personale intelligente</p>
+
 </header>
 
-<main id="app"></main>
+<nav>
 
-<button id="installBtn"
-style="display:none;position:fixed;right:16px;bottom:76px;z-index:8;padding:13px 16px;border:0;border-radius:14px;background:#e9faff;color:#071018;font-weight:800"
+<button class="tab active"
+onclick="showPage('home',this)">
+Home
+</button>
+
+<button class="tab"
+onclick="showPage('memory',this)">
+Memoria
+</button>
+
+<button class="tab"
+onclick="showPage('contexts',this)">
+Contesti
+</button>
+
+<button class="tab"
+onclick="showPage('events',this)">
+Eventi
+</button>
+
+<button class="tab"
+onclick="showPage('privacy',this)">
+Privacy
+</button>
+
+</nav>
+
+<main>
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+<div class="card hero">
+
+<div class="status">
+● SECONDO pronto
+</div>
+
+<h2>Come posso aiutarti?</h2>
+
+<button
+id="voiceBtn"
+class="voiceBtn"
+onclick="startListening()">
+
+🎙️
+
+</button>
+
+<div id="voiceText"
+class="voiceText">
+
+Premi e parla con SECONDO
+
+</div>
+
+<br>
+
+<textarea
+id="input"
+placeholder="Oppure scrivi qui...">
+</textarea>
+
+<button
+class="primary"
+onclick="processInput()">
+
+Salva / Invia
+
+</button>
+
+<button
+id="installBtn"
+class="primary install"
 onclick="installSECONDO()">
-📱 Installa SECONDO
+
+📲 Installa SECONDO
+
 </button>
 
-<nav class="nav" id="nav"></nav>
-
-<div class="modal" id="modal">
-<div class="sheet">
-<h3>🎙️ Parla con SECONDO</h3>
-
-<textarea id="input"
-placeholder="Es. Ricorda che venerdì alle 18 devo chiamare Mario."></textarea>
-
-<button class="primary" onclick="processInput()">
-🧠 Elabora e salva
-</button>
-
-<button class="secondary" onclick="closeModal()">
-Annulla
-</button>
-</div>
 </div>
 
-<div class="modal" id="whyModal">
-<div class="sheet">
-<h3>❓ Perché?</h3>
-<div id="whyContent"></div>
-<button class="secondary" onclick="closeWhy()">Chiudi</button>
-</div>
-</div>
+<div class="card">
 
-<script>
+<h3>Prossimo evento</h3>
 
-const tabs=[
-['⌂','Home'],
-['🧠','Memoria'],
-['🔗','Contesti'],
-['📅','Eventi'],
-['🔒','Privacy']
-];
+<div id="nextEvent"></div>
 
-let tab='Home';
-
-function get(key,defaultValue){
-try{
-return JSON.parse(localStorage.getItem(key)) ?? defaultValue;
-}catch(e){
-return defaultValue;
-}
-}
-
-function set(key,value){
-localStorage.setItem(key,JSON.stringify(value));
-}
-
-function init(){
-
-if(!localStorage.getItem('memories'))
-set('memories',[]);
-
-if(!localStorage.getItem('events'))
-set('events',[]);
-
-if(!localStorage.getItem('contexts'))
-set('contexts',[]);
-
-render();
-}
-
-function nav(){
-
-document.getElementById('nav').innerHTML=
-tabs.map(([icon,name])=>`
-<button class="${tab===name?'active':''}"
-onclick="tab='${name}';render()">
-${icon}<br>${name}
-</button>
-`).join('');
-
-}
-
-function render(){
-
-nav();
-
-const app=document.getElementById('app');
-
-if(tab==='Home')home(app);
-if(tab==='Memoria')memory(app);
-if(tab==='Contesti')contexts(app);
-if(tab==='Eventi')events(app);
-if(tab==='Privacy')privacy(app);
-
-}
-
-function home(a){
-
-const events=get('events',[]);
-const memories=get('memories',[]);
-
-let next=events[0];
-
-a.innerHTML=`
-
-<section class="hero">
-
-<div class="label">ASSISTENTE PERSONALE</div>
-
-<div style="font-size:22px;font-weight:700">
-Come posso aiutarti?
-</div>
-
-<button class="ask" onclick="listenOrOpen()">
-🎙️ Parla con SECONDO
-</button>
-
-</section>
-
-<section class="card">
-
-<div class="label">PROSSIMO EVENTO</div>
-
-${
-next
-?
-`
-<b>${esc(next.title)}</b>
-
-<div class="small">
-${esc(next.when)}
-</div>
-
-<span class="pill">
-🔔 ${esc(next.reminderText)}
-</span>
-`
-:
-`
-<div class="empty">
-Nessun evento programmato.
-</div>
-`
-}
-
-</section>
-
-<section class="card">
-
-<div class="label">MEMORIA</div>
-
-<b>
-${memories.length}
-${memories.length===1?'informazione salvata':'informazioni salvate'}
-</b>
-
-<div class="small">
-Le informazioni vengono conservate sul dispositivo.
 </div>
 
 </section>
 
-<section class="card">
 
-<div class="label">PROVA</div>
+<!-- MEMORIA -->
 
-<div class="small">
+<section id="memory" class="page">
 
-Prova a dire:
+<div class="card">
 
-<br><br>
-
-<b>
-“Ricorda che venerdì alle 18 devo chiamare Mario.”
-</b>
-
-<br><br>
-
-SECONDO riconoscerà persona, azione, giorno e ora.
-
-</div>
-
-</section>
-`;
-
-}
-
-function memory(a){
-
-let memories=get('memories',[]);
-
-a.innerHTML=`
-
-<section class="card">
-
-<div class="label">MEMORIA</div>
-
-<h2>🧠 Cosa ricorda SECONDO</h2>
+<h2>🧠 Memoria</h2>
 
 <input
-id="searchMemory"
-placeholder="🔎 Cerca nella memoria..."
-oninput="renderMemoryList()"
->
+id="memorySearch"
+oninput="renderMemories()"
+placeholder="Cerca nella memoria..."
+style="width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;">
+
+</div>
 
 <div id="memoryList"></div>
 
 </section>
 
-<section class="card">
+
+<!-- CONTESTI -->
+
+<section id="contexts" class="page">
+
+<div class="card">
+
+<h2>🔗 Contesti</h2>
+
+<div id="contextList"></div>
+
+</div>
+
+</section>
+
+
+<!-- EVENTI -->
+
+<section id="events" class="page">
+
+<div class="card">
+
+<h2>📅 Eventi</h2>
+
+<div id="eventList"></div>
+
+</div>
+
+</section>
+
+
+<!-- PRIVACY -->
+
+<section id="privacy" class="page">
+
+<div class="card">
+
+<h2>🔐 Privacy</h2>
+
+<div class="setting">
+🎙️ Microfono<br>
+<span class="small">
+Il microfono viene utilizzato solo quando premi il pulsante di ascolto.
+</span>
+</div>
+
+<div class="setting">
+🧠 Memoria<br>
+<span class="small">
+Le memorie di questa versione sono salvate localmente sul dispositivo.
+</span>
+</div>
+
+<div class="setting">
+📍 Posizione<br>
+<span class="small">
+Non utilizzata in questa versione.
+</span>
+</div>
+
+<div class="setting">
+☁️ Cloud / AI<br>
+<span class="small">
+Non collegato in questa versione.
+</span>
+</div>
+
+<br>
 
 <button
-class="ask"
-style="margin:0"
-onclick="openModal()">
+class="danger"
+onclick="clearAllData()">
 
-＋ Nuova memoria
+🗑️ Dimentica tutto
 
 </button>
 
-</section>
-`;
+</div>
 
-renderMemoryList();
+</section>
+
+</main>
+
+
+<!-- MODALE -->
+
+<div id="modal" class="modal">
+
+<div class="modalBox">
+
+<button
+class="close"
+onclick="closeModal()">
+
+×
+</button>
+
+<h3>❓ Perché?</h3>
+
+<div id="modalText"></div>
+
+<br>
+
+<button
+class="secondary"
+onclick="closeModal()">
+
+Chiudi
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   DATI
+========================= */
+
+let memories =
+JSON.parse(localStorage.getItem('memories') || '[]');
+
+let events =
+JSON.parse(localStorage.getItem('events') || '[]');
+
+let contexts =
+JSON.parse(localStorage.getItem('contexts') || '[]');
+
+
+function saveData(){
+
+localStorage.setItem(
+'memories',
+JSON.stringify(memories)
+);
+
+localStorage.setItem(
+'events',
+JSON.stringify(events)
+);
+
+localStorage.setItem(
+'contexts',
+JSON.stringify(contexts)
+);
 
 }
 
-function renderMemoryList(){
 
-const box=document.getElementById('memoryList');
+/* =========================
+   NAVIGAZIONE
+========================= */
 
-if(!box)return;
+function showPage(page,button){
 
-const search=
-(document.getElementById('searchMemory')?.value||'')
+document
+.querySelectorAll('.page')
+.forEach(p=>{
+p.classList.remove('active');
+});
+
+document
+.getElementById(page)
+.classList.add('active');
+
+document
+.querySelectorAll('.tab')
+.forEach(b=>{
+b.classList.remove('active');
+});
+
+if(button){
+button.classList.add('active');
+}
+
+renderAll();
+
+}
+
+
+/* =========================
+   MEMORIA
+========================= */
+
+function renderMemories(){
+
+const list =
+document.getElementById('memoryList');
+
+const search =
+(document.getElementById('memorySearch')?.value || '')
 .toLowerCase();
 
-const memories=get('memories',[]);
-
-const filtered=memories.filter(m=>
-(
-m.text+' '+(m.person||'')+' '+(m.action||'')
-).toLowerCase().includes(search)
+const filtered =
+memories.filter(m=>
+m.text.toLowerCase().includes(search)
 );
 
 if(!filtered.length){
 
-box.innerHTML=`
-<div class="empty">
-Nessuna memoria trovata.
-</div>
-`;
+list.innerHTML=
+'<div class="card empty">Nessuna memoria trovata.</div>';
 
 return;
+
 }
 
-box.innerHTML=filtered.map(m=>`
+list.innerHTML='';
 
-<div class="item">
+filtered
+.slice()
+.reverse()
+.forEach((memory,index)=>{
 
-<b>${esc(m.text)}</b>
+const div =
+document.createElement('div');
 
-<div class="small">
-Salvata: ${esc(m.date)}
+div.className='item';
+
+div.innerHTML=`
+
+<div class="itemTitle">
+🧠 ${escapeHTML(memory.text)}
 </div>
 
-${m.person?
-`<span class="pill">👤 ${esc(m.person)}</span>`:''}
+<div class="itemSmall">
+Salvata: ${memory.date || 'adesso'}
+</div>
 
-${m.action?
-`<span class="pill">➡️ ${esc(m.action)}</span>`:''}
-
-${m.eventId?
-`<span class="pill">🔗 Evento collegato</span>`:''}
-
-<div>
+<div style="margin-top:10px">
 
 <button
-class="action"
-onclick="showWhy('${m.id}')">
+class="secondary"
+onclick="whyMemory('${memory.id}')">
+
 ❓ Perché?
+
 </button>
 
 <button
-class="action"
-onclick="forget('${m.id}')">
-🗑️ Dimentica
-</button>
+class="danger"
+onclick="forgetMemory('${memory.id}')">
 
-</div>
-
-</div>
-
-`).join('');
-
-}
-
-function contexts(a){
-
-const contexts=get('contexts',[]);
-
-a.innerHTML=`
-
-<section class="card">
-
-<div class="label">CONTESTI</div>
-
-<h2>🔗 Contesti intelligenti</h2>
-
-${
-contexts.length
-?
-contexts.map(c=>`
-
-<div class="item">
-
-<b>${esc(c.title)}</b>
-
-<div class="small">
-${esc(c.description)}
-</div>
-
-<span class="pill">
-Memoria + Evento
-</span>
-
-</div>
-
-`).join('')
-:
-`
-<div class="empty">
-Quando collegheremo una memoria a un evento,
-SECONDO creerà qui il relativo contesto.
-</div>
-`
-}
-
-</section>
-`;
-
-}
-
-function events(a){
-
-const events=get('events',[]);
-
-a.innerHTML=`
-
-<section class="card">
-
-<div class="label">EVENTI</div>
-
-<h2>📅 I tuoi eventi</h2>
-
-${
-events.length
-?
-events.map(e=>`
-
-<div class="item">
-
-<b>${esc(e.title)}</b>
-
-<div class="small">
-${esc(e.when)}
-</div>
-
-<span class="pill">
-🔔 ${esc(e.reminderText)}
-</span>
-
-<span class="pill">
-${e.confirmed?'✅ Confermato':'⚠️ Da verificare'}
-</span>
-
-</div>
-
-`).join('')
-:
-`
-<div class="empty">
-Nessun evento programmato.
-</div>
-`
-}
-
-</section>
-
-<section class="card">
-
-<button
-class="ask"
-style="margin:0"
-onclick="openModal()">
-
-＋ Nuovo evento / memoria
+Dimentica
 
 </button>
 
-</section>
+</div>
+
 `;
+
+list.appendChild(div);
+
+});
 
 }
 
-function privacy(a){
 
-a.innerHTML=`
+/* =========================
+   EVENTI
+========================= */
 
-<section class="card">
+function renderEvents(){
 
-<div class="label">PRIVACY</div>
+const list =
+document.getElementById('eventList');
 
-<h2>🔒 Il controllo è tuo</h2>
+if(!events.length){
 
-<div class="item">
-🎙️ Microfono
-<div class="small">
-Attivato solo quando utilizzi l'ascolto.
+list.innerHTML=
+'<div class="empty">Nessun evento salvato.</div>';
+
+return;
+
+}
+
+list.innerHTML='';
+
+events
+.slice()
+.reverse()
+.forEach(event=>{
+
+const div =
+document.createElement('div');
+
+div.className='item';
+
+div.innerHTML=`
+
+<div class="itemTitle">
+📅 ${escapeHTML(event.title)}
 </div>
-</div>
 
-<div class="item">
-📍 Posizione
-<div class="small">
-Non utilizzata nella V1.
-</div>
-</div>
+<div class="itemSmall">
 
-<div class="item">
-☁️ Cloud
-<div class="small">
-Nessun cloud per la memoria V1.
-</div>
-</div>
+Giorno: ${escapeHTML(event.day || '')}<br>
 
-<div class="item">
-🧠 Memoria
-<div class="small">
-Salvata localmente sul dispositivo.
-</div>
+Ora: ${escapeHTML(event.time || '')}<br>
+
+Promemoria: ${escapeHTML(event.reminder || '')}
+
 </div>
 
 <button
 class="secondary"
-onclick="clearMemories()">
+style="margin-top:10px"
+onclick="whyEvent('${event.id}')">
 
-Cancella tutte le memorie
-
-</button>
-
-<button
-class="secondary"
-onclick="clearAll()">
-
-Cancella tutti i dati
+❓ Perché?
 
 </button>
 
-</section>
+`;
+
+list.appendChild(div);
+
+});
+
+}
+
+
+/* =========================
+   CONTESTI
+========================= */
+
+function renderContexts(){
+
+const list =
+document.getElementById('contextList');
+
+if(!contexts.length){
+
+list.innerHTML=
+'<div class="empty">Nessun contesto creato.</div>';
+
+return;
+
+}
+
+list.innerHTML='';
+
+contexts
+.slice()
+.reverse()
+.forEach(context=>{
+
+const div =
+document.createElement('div');
+
+div.className='item';
+
+div.innerHTML=`
+
+<div class="itemTitle">
+🔗 ${escapeHTML(context.title)}
+</div>
+
+<div class="itemSmall">
+
+${escapeHTML(context.description || '')}
+
+</div>
+
+`;
+
+list.appendChild(div);
+
+});
+
+}
+
+
+/* =========================
+   PROSSIMO EVENTO
+========================= */
+
+function renderNextEvent(){
+
+const box =
+document.getElementById('nextEvent');
+
+if(!events.length){
+
+box.innerHTML=
+'<div class="empty">Nessun evento programmato.</div>';
+
+return;
+
+}
+
+const event=events[events.length-1];
+
+box.innerHTML=`
+
+<div class="item">
+
+<div class="itemTitle">
+📅 ${escapeHTML(event.title)}
+</div>
+
+<div class="itemSmall">
+
+${escapeHTML(event.day || '')}
+alle
+${escapeHTML(event.time || '')}
+
+<br>
+
+Ti ricorderò alle
+${escapeHTML(event.reminder || '')}
+
+</div>
+
+</div>
+
 `;
 
 }
 
-function openModal(){
 
-document.getElementById('modal').style.display='flex';
+/* =========================
+   PARSING FRASE
+========================= */
 
-document.getElementById('input').focus();
+function parseItalianMemory(text){
+
+const lower=text.toLowerCase();
+
+let day='';
+
+const days=[
+'lunedì',
+'martedì',
+'mercoledì',
+'giovedì',
+'venerdì',
+'sabato',
+'domenica'
+];
+
+for(const d of days){
+
+if(lower.includes(d)){
+
+day=d;
+
+break;
 
 }
 
-function closeModal(){
+}
 
-document.getElementById('modal').style.display='none';
+if(lower.includes('domani')){
+day='domani';
+}
+
+if(lower.includes('oggi')){
+day='oggi';
+}
+
+let time='';
+
+const timeMatch =
+lower.match(/(?:alle|ore)\s*(\d{1,2})(?:[:.](\d{2}))?/);
+
+if(timeMatch){
+
+let h=timeMatch[1];
+
+let m=timeMatch[2] || '00';
+
+time=
+String(h).padStart(2,'0')
++
+':'
++
+String(m).padStart(2,'0');
 
 }
 
-function processInput(){
 
-const text=
-document.getElementById('input').value.trim();
+/* PERSONA */
 
-if(!text)return;
+let person='';
 
-const data=parseInput(text);
-
-if(data.needsConfirmation){
-
-const ok=confirm(
-'Ho capito così:\\n\\n'+
-data.summary+
-'\\n\\nConfermi questa informazione?'
+const personMatch =
+text.match(
+/(?:chiamare|incontrare|vedere|sentire|scrivere)\s+([A-ZÀ-Ý][a-zà-ÿ]+)/i
 );
 
-if(!ok){
-closeModal();
-return;
-}
+if(personMatch){
+
+person=personMatch[1];
 
 }
 
-const memoryId='m_'+Date.now();
 
-const memory={
+/* AZIONE */
 
-id:memoryId,
+let action='';
 
-text:text,
+if(lower.includes('chiamare')){
 
-date:new Date().toLocaleString('it-IT'),
+action='Chiamare';
 
-person:data.person,
+}
 
-action:data.action,
+else if(lower.includes('incontrare')){
 
-confidence:data.confidence,
+action='Incontrare';
 
-source:'Input dell’utente',
+}
 
-eventId:null
+else if(lower.includes('vedere')){
+
+action='Vedere';
+
+}
+
+else if(lower.includes('pagare')){
+
+action='Pagare';
+
+}
+
+else if(lower.includes('sentire')){
+
+action='Sentire';
+
+}
+
+return {
+
+day,
+time,
+person,
+action
 
 };
 
-const memories=get('memories',[]);
+}
 
-memories.unshift(memory);
 
-set('memories',memories);
+/* =========================
+   ELABORA INPUT
+========================= */
 
-if(data.event){
+function processInput(){
 
-const eventId='e_'+Date.now();
+const input =
+document.getElementById('input');
+
+const text =
+input.value.trim();
+
+if(!text){
+
+return;
+
+}
+
+
+/* MEMORIA */
+
+const id=
+Date.now().toString();
+
+const memory={
+
+id:id,
+
+text:text,
+
+date:new Date().toLocaleString('it-IT')
+
+};
+
+memories.push(memory);
+
+
+/* ANALISI */
+
+const parsed=
+parseItalianMemory(text);
+
+
+/* EVENTO */
+
+if(parsed.day && parsed.time){
+
+let title='Promemoria';
+
+if(parsed.action && parsed.person){
+
+title=
+parsed.action+' '+parsed.person;
+
+}
+
+else if(parsed.action){
+
+title=parsed.action;
+
+}
+
+else{
+
+title=text;
+
+}
+
+
+const eventId=
+'event_'+Date.now();
 
 const event={
 
 id:eventId,
 
-title:data.event.title,
-
-when:data.event.when,
-
-reminderText:data.event.reminderText,
-
-confirmed:data.confirmed,
-
-sourceMemoryId:memoryId
-
-};
-
-const events=get('events',[]);
-
-events.unshift(event);
-
-set('events',events);
-
-memory.eventId=eventId;
-
-set('memories',memories);
-
-createContext(
-data.event.title,
-data.person,
-data.action,
-eventId,
-memoryId
-);
-
-}
-
-closeModal();
-
-tab='Memoria';
-
-render();
-
-}
-
-function parseInput(text){
-
-const low=text.toLowerCase();
-
-let person='';
-
-const personMatch=
-text.match(
-/\b(?:con|a|da|per)\s+([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+)\b/
-);
-
-if(personMatch)
-person=personMatch[1];
-
-let action='';
-
-if(/\bchiamare\b|\bchiama\b/.test(low))
-action='chiamare';
-
-else if(/\bincontrare\b|\bincontro\b/.test(low))
-action='incontrare';
-
-else if(/\bpagare\b|\bpagamento\b/.test(low))
-action='pagare';
-
-else if(/\bportare\b/.test(low))
-action='portare';
-
-let day='';
-
-if(low.includes('domani'))day='Domani';
-else if(low.includes('oggi'))day='Oggi';
-else if(low.includes('venerdì'))day='Venerdì';
-else if(low.includes('sabato'))day='Sabato';
-else if(low.includes('domenica'))day='Domenica';
-else if(low.includes('lunedì'))day='Lunedì';
-else if(low.includes('martedì'))day='Martedì';
-else if(low.includes('mercoledì'))day='Mercoledì';
-else if(low.includes('giovedì'))day='Giovedì';
-
-const timeMatch=
-text.match(/\b(?:alle|ore)\s*(\d{1,2})(?::(\d{2}))?\b/i);
-
-let hour=
-timeMatch?parseInt(timeMatch[1]):null;
-
-let minute=
-timeMatch&&timeMatch[2]
-?parseInt(timeMatch[2])
-:0;
-
-let event=null;
-
-let confirmed=true;
-
-let needsConfirmation=false;
-
-if(day && hour!==null){
-
-if(
-low.includes('diciamo')||
-low.includes('forse')||
-low.includes('credo')||
-low.includes('circa')||
-low.includes('più o meno')
-){
-
-confirmed=false;
-needsConfirmation=true;
-
-}
-
-let title='Impegno';
-
-if(low.includes('assemblea'))
-title='Assemblea di condominio';
-
-else if(low.includes('dentista'))
-title='Appuntamento dal dentista';
-
-else if(action==='chiamare')
-title='Chiamare'+
-(person?' '+person:'');
-
-else if(action==='incontrare')
-title='Incontro'+
-(person?' con '+person:'');
-
-const totalMinutes=
-hour*60+minute;
-
-const reminder=
-(totalMinutes-10+1440)%1440;
-
-event={
-
 title:title,
 
-when:
-day+' — '+
-String(hour).padStart(2,'0')+
-':'+
-String(minute).padStart(2,'0'),
+day:parsed.day,
 
-reminderText:
-String(Math.floor(reminder/60)).padStart(2,'0')+
-':'+
-String(reminder%60).padStart(2,'0')
+time:parsed.time,
+
+reminder:subtractTenMinutes(parsed.time),
+
+memoryId:id
 
 };
 
-}
+events.push(event);
 
-return{
 
-person:person,
+/* CONTESTO */
 
-action:action,
+const context={
 
-confidence:
-confirmed?'Certa':'Da verificare',
-
-confirmed:confirmed,
-
-needsConfirmation:needsConfirmation,
-
-event:event,
-
-summary:event
-?
-event.title+
-'\\n'+
-event.when+
-'\\nPromemoria: '+
-event.reminderText
-:
-'Salvare questa informazione in memoria?'
-
-};
-
-}
-
-function createContext(
-title,
-person,
-action,
-eventId,
-memoryId
-){
-
-const contexts=get('contexts',[]);
-
-contexts.unshift({
-
-id:'c_'+Date.now(),
+id:'context_'+Date.now(),
 
 title:title,
 
 description:
-(person?'Persona: '+person+'. ':'')+
-(action?'Azione: '+action+'. ':'')+
-'Informazione collegata all’evento.',
+'Collegato alla memoria: "'+
+text+
+'"',
 
 eventId:eventId,
 
-memoryId:memoryId
+memoryId:id
 
-});
+};
 
-set('contexts',contexts);
+contexts.push(context);
 
 }
 
-function showWhy(id){
 
-const memories=get('memories',[]);
+/* SALVA */
+
+saveData();
+
+
+/* PULISCI */
+
+input.value='';
+
+document.getElementById('voiceText').innerText=
+'Memoria salvata ✓';
+
+
+renderAll();
+
+}
+
+
+/* =========================
+   -10 MINUTI
+========================= */
+
+function subtractTenMinutes(time){
+
+const parts=time.split(':');
+
+let h=parseInt(parts[0]);
+
+let m=parseInt(parts[1]);
+
+m-=10;
+
+if(m<0){
+
+m+=60;
+
+h--;
+
+}
+
+if(h<0){
+
+h=23;
+
+}
+
+return String(h).padStart(2,'0')
++
+':'
++
+String(m).padStart(2,'0');
+
+}
+
+
+/* =========================
+   DIMENTICA
+========================= */
+
+function forgetMemory(id){
+
+memories=
+memories.filter(m=>m.id!==id);
+
+contexts=
+contexts.filter(c=>c.memoryId!==id);
+
+events=
+events.filter(e=>e.memoryId!==id);
+
+saveData();
+
+renderAll();
+
+}
+
+
+/* =========================
+   DIMENTICA TUTTO
+========================= */
+
+function clearAllData(){
+
+if(!confirm(
+'Sei sicuro di voler dimenticare tutto?'
+)){
+
+return;
+
+}
+
+memories=[];
+
+events=[];
+
+contexts=[];
+
+saveData();
+
+renderAll();
+
+}
+
+
+/* =========================
+   PERCHÉ
+========================= */
+
+function whyMemory(id){
 
 const memory=
-memories.find(x=>x.id===id);
+memories.find(m=>m.id===id);
 
-if(!memory)return;
-
-document.getElementById('whyContent').innerHTML=`
-
-<div class="card">
-
-<b>
-SECONDO ti mostra questa informazione perché
-sei stato tu a salvarla.
-</b>
-
-<div class="small" style="margin-top:12px">
-
-<strong>Fonte:</strong>
-${esc(memory.source)}
-
-<br>
-
-<strong>Salvata:</strong>
-${esc(memory.date)}
-
-<br>
-
-<strong>Affidabilità:</strong>
-${esc(memory.confidence)}
-
-${
-memory.eventId
-?
-`
-<br><br>
-🔗 Questa memoria è collegata a un evento.
-`
-:''
-}
-
-</div>
-
-</div>
-`;
-
-document.getElementById('whyModal').style.display='flex';
-
-}
-
-function closeWhy(){
-
-document.getElementById('whyModal').style.display='none';
-
-}
-
-function forget(id){
-
-if(!confirm('Dimenticare questa memoria?'))
-return;
-
-const memories=get('memories',[]);
-
-set(
-'memories',
-memories.filter(m=>m.id!==id)
-);
-
-render();
-
-}
-
-function clearMemories(){
-
-if(
-confirm('Cancellare tutte le memorie?')
-){
-
-localStorage.removeItem('memories');
-
-render();
-
-}
-
-}
-
-function clearAll(){
-
-if(
-confirm('Cancellare tutti i dati di SECONDO?')
-){
-
-localStorage.clear();
-
-init();
-
-}
-
-}
-
-function esc(value){
-
-return String(value||'')
-.replace(/[&<>'"]/g,function(c){
-
-return{
-
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-"'":'&#39;',
-'"':'&quot;'
-
-}[c];
-
-});
-
-}
-
-function listenOrOpen(){
-
-if(
-!('webkitSpeechRecognition' in window||
-'SpeechRecognition' in window)
-){
-
-openModal();
+if(!memory){
 
 return;
 
 }
 
-const Recognition=
-window.SpeechRecognition||
+const linkedEvent=
+events.find(e=>e.memoryId===id);
+
+let text=
+'Questa informazione è stata salvata perché sei stato tu a comunicarla a SECONDO.';
+
+if(linkedEvent){
+
+text+=
+'<br><br>È stata collegata anche all’evento <b>'+
+escapeHTML(linkedEvent.title)+
+'</b>.';
+
+}
+
+openModal(text);
+
+}
+
+
+function whyEvent(id){
+
+const event=
+events.find(e=>e.id===id);
+
+if(!event){
+
+return;
+
+}
+
+const memory=
+memories.find(m=>m.id===event.memoryId);
+
+let text=
+'Questo promemoria deriva da un’informazione che hai comunicato a SECONDO.';
+
+if(memory){
+
+text+=
+'<br><br><b>Memoria originale:</b><br>'+
+escapeHTML(memory.text);
+
+}
+
+openModal(text);
+
+}
+
+
+/* =========================
+   MODALE
+========================= */
+
+function openModal(text){
+
+document.getElementById('modalText')
+.innerHTML=text;
+
+document.getElementById('modal')
+.style.display='flex';
+
+}
+
+function closeModal(){
+
+document.getElementById('modal')
+.style.display='none';
+
+}
+
+
+/* =========================
+   MICROFONO
+========================= */
+
+let recognition=null;
+
+let listening=false;
+
+let silenceTimer=null;
+
+let finalTranscript='';
+
+let interimTranscript='';
+
+const SpeechRecognition=
+window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
-const recognition=
-new Recognition();
+
+function startListening(){
+
+if(!SpeechRecognition){
+
+alert(
+'Il riconoscimento vocale non è supportato da questo browser.'
+);
+
+return;
+
+}
+
+if(listening){
+
+stopListening();
+
+return;
+
+}
+
+
+recognition=
+new SpeechRecognition();
+
+
+/*
+ IMPORTANTE:
+ ascolto continuo
+*/
+
+recognition.continuous=true;
+
+
+/*
+ Mostra anche quello che stai dicendo
+ prima che tu abbia finito.
+*/
+
+recognition.interimResults=true;
+
+
+/*
+ Italiano
+*/
 
 recognition.lang='it-IT';
 
-recognition.interimResults=false;
 
-recognition.onresult=function(e){
+/*
+ Una sola sessione.
+*/
 
-document.getElementById('input').value=
-e.results[0][0].transcript;
+recognition.maxAlternatives=1;
 
-processInput();
+
+finalTranscript='';
+
+interimTranscript='';
+
+listening=true;
+
+const button=
+document.getElementById('voiceBtn');
+
+button.classList.add('listening');
+
+button.innerText='⏹️';
+
+document.getElementById('voiceText')
+.innerText=
+'🎙️ Ti ascolto... parla con calma';
+
+
+recognition.onstart=function(){
+
+resetSilenceTimer();
 
 };
 
-recognition.onerror=function(){
 
-openModal();
+recognition.onresult=function(event){
+
+clearTimeout(silenceTimer);
+
+finalTranscript='';
+
+interimTranscript='';
+
+
+for(
+let i=0;
+i<event.results.length;
+i++
+){
+
+const result=
+event.results[i];
+
+const transcript=
+result[0].transcript;
+
+
+if(result.isFinal){
+
+finalTranscript+=transcript+' ';
+
+}else{
+
+interimTranscript+=transcript+' ';
+
+}
+
+}
+
+
+const completeText=
+(
+finalTranscript+
+interimTranscript
+).trim();
+
+
+document.getElementById('input')
+.value=completeText;
+
+
+/*
+ Ogni volta che viene rilevata
+ una nuova parola ripartiamo
+ da 3 secondi.
+*/
+
+resetSilenceTimer();
 
 };
+
+
+recognition.onerror=function(event){
+
+console.log(
+'Errore microfono:',
+event.error
+);
+
+clearTimeout(silenceTimer);
+
+listening=false;
+
+button.classList.remove('listening');
+
+button.innerText='🎙️';
+
+if(event.error==='not-allowed'){
+
+document.getElementById('voiceText')
+.innerText=
+'Microfono non autorizzato.';
+
+}else{
+
+document.getElementById('voiceText')
+.innerText=
+'Puoi riprovare a parlare.';
+
+}
+
+};
+
+
+recognition.onend=function(){
+
+/*
+ Se abbiamo già deciso di terminare,
+ non fare nulla.
+*/
+
+if(!listening){
+
+return;
+
+}
+
+
+/*
+ Chrome può chiudere autonomamente
+ la sessione. Se l'utente sta ancora
+ parlando, la riapriamo.
+*/
+
+try{
+
+recognition.start();
+
+}catch(e){
+
+console.log(e);
+
+}
+
+};
+
 
 recognition.start();
 
 }
 
+
+/*
+ Timer del silenzio.
+
+ Aspettiamo 3 secondi dopo
+ l'ultima parola.
+*/
+
+function resetSilenceTimer(){
+
+clearTimeout(silenceTimer);
+
+silenceTimer=
+setTimeout(function(){
+
+finishListening();
+
+},3000);
+
+}
+
+
+/*
+ Fine ascolto
+*/
+
+function finishListening(){
+
+clearTimeout(silenceTimer);
+
+listening=false;
+
+if(recognition){
+
+try{
+
+recognition.stop();
+
+}catch(e){}
+
+}
+
+
+const button=
+document.getElementById('voiceBtn');
+
+button.classList.remove('listening');
+
+button.innerText='🎙️';
+
+
+const text=
+document.getElementById('input')
+.value.trim();
+
+
+if(text){
+
+document.getElementById('voiceText')
+.innerText=
+'Sto elaborando...';
+
+setTimeout(function(){
+
+processInput();
+
+},300);
+
+}else{
+
+document.getElementById('voiceText')
+.innerText=
+'Non ho sentito nulla. Riprova.';
+
+}
+
+}
+
+
+/*
+ Pulsante durante l'ascolto:
+ se lo premi di nuovo,
+ terminiamo manualmente.
+*/
+
+function stopListening(){
+
+finishListening();
+
+}
+
+
+/* =========================
+   SICUREZZA HTML
+========================= */
+
+function escapeHTML(text){
+
+return String(text)
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')
+.replace(/>/g,'&gt;')
+.replace(/"/g,'&quot;')
+.replace(/'/g,'&#039;');
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function renderAll(){
+
+renderMemories();
+
+renderEvents();
+
+renderContexts();
+
+renderNextEvent();
+
+}
+
+
+/* =========================
+   SERVICE WORKER
+========================= */
+
 if('serviceWorker' in navigator){
 
 navigator.serviceWorker.register(
 '/SECONDO/sw.js',
-{scope:'/SECONDO/'}
+{
+scope:'/SECONDO/'
+}
 );
 
 }
 
-init();
+
+/* =========================
+   AVVIO
+========================= */
+
+renderAll();
 
 </script>
+
 
 <script>
 
 let deferredInstallPrompt=null;
+
 
 window.addEventListener(
 'beforeinstallprompt',
@@ -1110,10 +1621,17 @@ e.preventDefault();
 
 deferredInstallPrompt=e;
 
-document.getElementById('installBtn').style.display='block';
+const button=
+document.getElementById('installBtn');
+
+if(button){
+
+button.style.display='inline-block';
 
 }
-);
+
+});
+
 
 async function installSECONDO(){
 
