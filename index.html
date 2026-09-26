@@ -16,5 +16,5 @@ function processInput(){let t=document.getElementById('input').value.trim();if(!
 function forget(i){let m=get('memories',[]);m.splice(i,1);set('memories',m);render()}
 function esc(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function listenOrOpen(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){openModal();return}let R=window.SpeechRecognition||window.webkitSpeechRecognition;let r=new R();r.lang='it-IT';r.onresult=e=>{document.getElementById('input').value=e.results[0][0].transcript;processInput()};r.onerror=()=>openModal();r.start()}
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');init();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');init();
 </script></body></html>
