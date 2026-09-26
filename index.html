@@ -1,27 +1,1141 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0f14"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="apple-touch-icon" href="/SECONDO/icons/icon-192.png"><link rel="manifest" href="/SECONDO/manifest.webmanifest"><link rel="icon" href="/SECONDO/icons/icon-192.png" type="image/png"><title>SECONDO</title><style>
-:root{--bg:#0b0f14;--card:#141a22;--muted:#9aa6b2;--text:#f5f7fa;--accent:#6ee7ff;--green:#55d68a;--danger:#ff6b6b}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}header{padding:22px 18px 12px;display:flex;justify-content:space-between;align-items:center}h1{margin:0;font-size:28px}main{padding:0 16px 92px}.hero{background:linear-gradient(145deg,#17212d,#10161e);border:1px solid #253241;border-radius:24px;padding:22px;margin:10px 0 16px}.status{color:var(--green);font-size:13px}.ask{width:100%;padding:20px;border:0;border-radius:18px;background:#e9faff;color:#071018;font-size:18px;font-weight:700;margin-top:14px}.card{background:var(--card);border:1px solid #222c38;border-radius:18px;padding:17px;margin:12px 0}.label{font-size:11px;letter-spacing:.12em;color:var(--muted);margin-bottom:8px}.nav{position:fixed;bottom:0;left:0;right:0;background:#0e141b;border-top:1px solid #26313d;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:5}.nav button{background:none;border:0;color:#9da8b5;font-size:11px;padding:8px 2px}.nav button.active{color:var(--accent)}button{cursor:pointer}.row{display:flex;gap:8px;align-items:center}.small{color:var(--muted);font-size:14px;line-height:1.45}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#263545;color:#cfefff;font-size:12px;margin-top:8px}.danger{color:var(--danger)}input,textarea{width:100%;background:#0d131a;color:white;border:1px solid #2a3745;border-radius:12px;padding:13px;font:inherit}textarea{min-height:110px}.modal{position:fixed;inset:0;background:#0009;display:none;align-items:end;z-index:10}.sheet{background:#121922;border-radius:22px 22px 0 0;padding:20px;width:100%;border-top:1px solid #304052}.sheet button{padding:13px;border-radius:12px;border:0;margin-top:10px;width:100%}.primary{background:#dff9ff;color:#071018}.secondary{background:#25313f;color:#fff}.list{margin-top:8px}.item{padding:14px 0;border-bottom:1px solid #25303b}.item:last-child{border-bottom:0}
-</style></head><body><header><h1>SECONDO</h1><span class="status">● Connesso</span></header><main id="app"></main><button id="installBtn" style="display:none;position:fixed;right:16px;bottom:76px;z-index:8;padding:13px 16px;border:0;border-radius:14px;background:#e9faff;color:#071018;font-weight:800" onclick="installSECONDO()">📱 Installa SECONDO</button><nav class="nav" id="nav"></nav><div class="modal" id="modal"><div class="sheet"><h3>Parla con SECONDO</h3><textarea id="input" placeholder="Es. Domani alle 18 ho l'assemblea di condominio..."></textarea><button class="primary" onclick="processInput()">Elabora</button><button class="secondary" onclick="closeModal()">Annulla</button></div></div><script>
-const tabs=[['⌂','Home'],['🧠','Memoria'],['🔗','Contesti'],['📅','Eventi'],['🔒','Privacy']];let tab='Home';
-const get=(k,d)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d));const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-function init(){if(!localStorage.getItem('events'))set('events',[{title:'Assemblea di condominio',when:'Domani — 18:00',reminder:'17:50',confirmed:true}]);render()}
-function nav(){document.getElementById('nav').innerHTML=tabs.map(([i,n])=>`<button class="${tab===n?'active':''}" onclick="tab='${n}';render()">${i}<br>${n}</button>`).join('')}
-function render(){nav();let a=document.getElementById('app');if(tab==='Home')home(a);if(tab==='Memoria')memory(a);if(tab==='Contesti')contexts(a);if(tab==='Eventi')events(a);if(tab==='Privacy')privacy(a)}
-function home(a){let ev=get('events',[])[0];a.innerHTML=`<section class="hero"><div class="label">ASSISTENTE PERSONALE</div><div style="font-size:22px;font-weight:700">Come posso aiutarti?</div><button class="ask" onclick="listenOrOpen()">🎙️ Parla con SECONDO</button></section><section class="card"><div class="label">PROSSIMO EVENTO</div><b>${ev?ev.title:'Nessun evento'}</b><div class="small">${ev?ev.when:''}</div>${ev?`<span class="pill">🔔 Promemoria ${ev.reminder}</span>`:''}</section><section class="card"><div class="label">PROVA</div><div class="small">“Domani alle 18 ho l'assemblea di condominio.”<br><br>SECONDO conserva l'informazione e la collega al contesto.</div></section>`}
-function memory(a){let m=get('memories',[]);a.innerHTML=`<section class="card"><div class="label">MEMORIA</div><h2>🧠 Cosa ricorda SECONDO</h2>${m.length?'<div class="list">'+m.map((x,i)=>`<div class="item">${esc(x.text)}<div class="small">Fonte: input utente · ${x.date}</div><button class="secondary" onclick="forget(${i})">🗑️ Dimentica</button></div>`).join('')+'</div>':'<div class="small">Nessuna memoria ancora. Prova a parlare con SECONDO.</div>'}</section>`}
-function contexts(a){a.innerHTML=`<section class="card"><div class="label">CONTESTI</div><h2>🔗 Memoria collegata</h2><div class="small">Qui appariranno i collegamenti tra persone, eventi, documenti e informazioni.</div><div class="card"><b>Assemblea di condominio</b><div class="small">Evento · Domani 18:00<br>Promemoria · 17:50</div><span class="pill">Contesto attivo</span></div></section>`}
-function events(a){let e=get('events',[]);a.innerHTML=`<section class="card"><div class="label">EVENTI</div><h2>📅 I tuoi eventi</h2>${e.map((x,i)=>`<div class="item"><b>${esc(x.title)}</b><div class="small">${esc(x.when)} · 🔔 ${esc(x.reminder)}</div><span class="pill">${x.confirmed?'Confermato':'Da verificare'}</span></div>`).join('')}</section><section class="card"><button class="ask" style="margin:0" onclick="openModal()">＋ Nuovo evento / memoria</button></section>`}
-function privacy(a){a.innerHTML=`<section class="card"><div class="label">PRIVACY</div><h2>🔒 Il controllo è tuo</h2><div class="item">🎙️ Microfono <span class="small">Usato solo quando attivi l'ascolto.</span></div><div class="item">📍 Posizione <span class="small">Disattivata nella V0.</span></div><div class="item">☁️ Cloud <span class="small">Nessun cloud nella V0.</span></div><div class="item">🧠 Memoria <span class="small">Salvata localmente sul dispositivo.</span></div><button class="secondary" onclick="if(confirm('Cancellare tutte le memorie?')){localStorage.removeItem('memories');render()}">Cancella tutte le memorie</button></section>`}
-function openModal(){document.getElementById('modal').style.display='flex';document.getElementById('input').focus()}function closeModal(){document.getElementById('modal').style.display='none'}
-function processInput(){let t=document.getElementById('input').value.trim();if(!t)return;let m=get('memories',[]);m.unshift({text:t,date:new Date().toLocaleString('it-IT')});set('memories',m);let low=t.toLowerCase();if(low.includes('assemblea')&&low.includes('18')){let e=get('events',[]);e[0]={title:'Assemblea di condominio',when:'Domani — 18:00',reminder:'17:50',confirmed:true};set('events',e)}closeModal();tab='Memoria';render()}
-function forget(i){let m=get('memories',[]);m.splice(i,1);set('memories',m);render()}
-function esc(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function listenOrOpen(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){openModal();return}let R=window.SpeechRecognition||window.webkitSpeechRecognition;let r=new R();r.lang='it-IT';r.onresult=e=>{document.getElementById('input').value=e.results[0][0].transcript;processInput()};r.onerror=()=>openModal();r.start()}
-if('serviceWorker' in navigator)navigator.serviceWorker.register('/SECONDO/sw.js',{scope:'/SECONDO/'});init();
-</script>
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/SECONDO/icon-192.png">
+<link rel="manifest" href="/SECONDO/manifest.webmanifest">
+<link rel="icon" href="/SECONDO/icon-192.png" type="image/png">
+<title>SECONDO</title>
+
+<style>
+:root{
+--bg:#0b0f14;
+--card:#141a22;
+--muted:#9aa6b2;
+--text:#f5f7fa;
+--accent:#6ee7ff;
+--green:#55d68a;
+--danger:#ff6b6b;
+--line:#26313d
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+header{
+padding:22px 18px 12px;
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+h1{margin:0;font-size:28px}
+main{padding:0 16px 95px}
+.hero{
+background:linear-gradient(145deg,#17212d,#10161e);
+border:1px solid #253241;
+border-radius:24px;
+padding:22px;
+margin:10px 0 16px
+}
+.status{color:var(--green);font-size:13px}
+.ask{
+width:100%;
+padding:20px;
+border:0;
+border-radius:18px;
+background:#e9faff;
+color:#071018;
+font-size:18px;
+font-weight:700;
+margin-top:14px
+}
+.card{
+background:var(--card);
+border:1px solid #222c38;
+border-radius:18px;
+padding:17px;
+margin:12px 0
+}
+.label{
+font-size:11px;
+letter-spacing:.12em;
+color:var(--muted);
+margin-bottom:8px
+}
+.nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#0e141b;
+border-top:1px solid var(--line);
+display:grid;
+grid-template-columns:repeat(5,1fr);
+padding:7px 4px calc(7px + env(safe-area-inset-bottom));
+z-index:5
+}
+.nav button{
+background:none;
+border:0;
+color:#9da8b5;
+font-size:11px;
+padding:8px 2px
+}
+.nav button.active{color:var(--accent)}
+button{cursor:pointer}
+.small{
+color:var(--muted);
+font-size:14px;
+line-height:1.45
+}
+.pill{
+display:inline-block;
+padding:5px 9px;
+border-radius:999px;
+background:#263545;
+color:#cfefff;
+font-size:12px;
+margin:5px 4px 0 0
+}
+input,textarea{
+width:100%;
+background:#0d131a;
+color:white;
+border:1px solid #2a3745;
+border-radius:12px;
+padding:13px;
+font:inherit
+}
+textarea{min-height:110px}
+.modal{
+position:fixed;
+inset:0;
+background:#0009;
+display:none;
+align-items:end;
+z-index:10
+}
+.sheet{
+background:#121922;
+border-radius:22px 22px 0 0;
+padding:20px;
+width:100%;
+border-top:1px solid #304052;
+max-height:90vh;
+overflow:auto
+}
+.sheet button{
+padding:13px;
+border-radius:12px;
+border:0;
+margin-top:10px;
+width:100%
+}
+.primary{background:#dff9ff;color:#071018}
+.secondary{background:#25313f;color:#fff}
+.item{
+padding:14px 0;
+border-bottom:1px solid #25303b
+}
+.item:last-child{border-bottom:0}
+.action{
+margin-top:9px;
+padding:9px 12px;
+border:0;
+border-radius:10px;
+background:#25313f;
+color:white
+}
+.empty{
+padding:18px 0;
+color:var(--muted)
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>SECONDO</h1>
+<span class="status">● Connesso</span>
+</header>
+
+<main id="app"></main>
+
+<button id="installBtn"
+style="display:none;position:fixed;right:16px;bottom:76px;z-index:8;padding:13px 16px;border:0;border-radius:14px;background:#e9faff;color:#071018;font-weight:800"
+onclick="installSECONDO()">
+📱 Installa SECONDO
+</button>
+
+<nav class="nav" id="nav"></nav>
+
+<div class="modal" id="modal">
+<div class="sheet">
+<h3>🎙️ Parla con SECONDO</h3>
+
+<textarea id="input"
+placeholder="Es. Ricorda che venerdì alle 18 devo chiamare Mario."></textarea>
+
+<button class="primary" onclick="processInput()">
+🧠 Elabora e salva
+</button>
+
+<button class="secondary" onclick="closeModal()">
+Annulla
+</button>
+</div>
+</div>
+
+<div class="modal" id="whyModal">
+<div class="sheet">
+<h3>❓ Perché?</h3>
+<div id="whyContent"></div>
+<button class="secondary" onclick="closeWhy()">Chiudi</button>
+</div>
+</div>
+
 <script>
-let deferredInstallPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;window.dispatchEvent(new Event('secondo-install-ready'));});
-window.addEventListener('secondo-install-ready',()=>document.getElementById('installBtn').style.display='block');
-async function installSECONDO(){if(!deferredInstallPrompt){alert('Chrome non ha ancora reso disponibile l’installazione. Apri SECONDO direttamente in Chrome, non in una finestra incorporata, e ricarica la pagina.');return;} deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt=null;}
+
+const tabs=[
+['⌂','Home'],
+['🧠','Memoria'],
+['🔗','Contesti'],
+['📅','Eventi'],
+['🔒','Privacy']
+];
+
+let tab='Home';
+
+function get(key,defaultValue){
+try{
+return JSON.parse(localStorage.getItem(key)) ?? defaultValue;
+}catch(e){
+return defaultValue;
+}
+}
+
+function set(key,value){
+localStorage.setItem(key,JSON.stringify(value));
+}
+
+function init(){
+
+if(!localStorage.getItem('memories'))
+set('memories',[]);
+
+if(!localStorage.getItem('events'))
+set('events',[]);
+
+if(!localStorage.getItem('contexts'))
+set('contexts',[]);
+
+render();
+}
+
+function nav(){
+
+document.getElementById('nav').innerHTML=
+tabs.map(([icon,name])=>`
+<button class="${tab===name?'active':''}"
+onclick="tab='${name}';render()">
+${icon}<br>${name}
+</button>
+`).join('');
+
+}
+
+function render(){
+
+nav();
+
+const app=document.getElementById('app');
+
+if(tab==='Home')home(app);
+if(tab==='Memoria')memory(app);
+if(tab==='Contesti')contexts(app);
+if(tab==='Eventi')events(app);
+if(tab==='Privacy')privacy(app);
+
+}
+
+function home(a){
+
+const events=get('events',[]);
+const memories=get('memories',[]);
+
+let next=events[0];
+
+a.innerHTML=`
+
+<section class="hero">
+
+<div class="label">ASSISTENTE PERSONALE</div>
+
+<div style="font-size:22px;font-weight:700">
+Come posso aiutarti?
+</div>
+
+<button class="ask" onclick="listenOrOpen()">
+🎙️ Parla con SECONDO
+</button>
+
+</section>
+
+<section class="card">
+
+<div class="label">PROSSIMO EVENTO</div>
+
+${
+next
+?
+`
+<b>${esc(next.title)}</b>
+
+<div class="small">
+${esc(next.when)}
+</div>
+
+<span class="pill">
+🔔 ${esc(next.reminderText)}
+</span>
+`
+:
+`
+<div class="empty">
+Nessun evento programmato.
+</div>
+`
+}
+
+</section>
+
+<section class="card">
+
+<div class="label">MEMORIA</div>
+
+<b>
+${memories.length}
+${memories.length===1?'informazione salvata':'informazioni salvate'}
+</b>
+
+<div class="small">
+Le informazioni vengono conservate sul dispositivo.
+</div>
+
+</section>
+
+<section class="card">
+
+<div class="label">PROVA</div>
+
+<div class="small">
+
+Prova a dire:
+
+<br><br>
+
+<b>
+“Ricorda che venerdì alle 18 devo chiamare Mario.”
+</b>
+
+<br><br>
+
+SECONDO riconoscerà persona, azione, giorno e ora.
+
+</div>
+
+</section>
+`;
+
+}
+
+function memory(a){
+
+let memories=get('memories',[]);
+
+a.innerHTML=`
+
+<section class="card">
+
+<div class="label">MEMORIA</div>
+
+<h2>🧠 Cosa ricorda SECONDO</h2>
+
+<input
+id="searchMemory"
+placeholder="🔎 Cerca nella memoria..."
+oninput="renderMemoryList()"
+>
+
+<div id="memoryList"></div>
+
+</section>
+
+<section class="card">
+
+<button
+class="ask"
+style="margin:0"
+onclick="openModal()">
+
+＋ Nuova memoria
+
+</button>
+
+</section>
+`;
+
+renderMemoryList();
+
+}
+
+function renderMemoryList(){
+
+const box=document.getElementById('memoryList');
+
+if(!box)return;
+
+const search=
+(document.getElementById('searchMemory')?.value||'')
+.toLowerCase();
+
+const memories=get('memories',[]);
+
+const filtered=memories.filter(m=>
+(
+m.text+' '+(m.person||'')+' '+(m.action||'')
+).toLowerCase().includes(search)
+);
+
+if(!filtered.length){
+
+box.innerHTML=`
+<div class="empty">
+Nessuna memoria trovata.
+</div>
+`;
+
+return;
+}
+
+box.innerHTML=filtered.map(m=>`
+
+<div class="item">
+
+<b>${esc(m.text)}</b>
+
+<div class="small">
+Salvata: ${esc(m.date)}
+</div>
+
+${m.person?
+`<span class="pill">👤 ${esc(m.person)}</span>`:''}
+
+${m.action?
+`<span class="pill">➡️ ${esc(m.action)}</span>`:''}
+
+${m.eventId?
+`<span class="pill">🔗 Evento collegato</span>`:''}
+
+<div>
+
+<button
+class="action"
+onclick="showWhy('${m.id}')">
+❓ Perché?
+</button>
+
+<button
+class="action"
+onclick="forget('${m.id}')">
+🗑️ Dimentica
+</button>
+
+</div>
+
+</div>
+
+`).join('');
+
+}
+
+function contexts(a){
+
+const contexts=get('contexts',[]);
+
+a.innerHTML=`
+
+<section class="card">
+
+<div class="label">CONTESTI</div>
+
+<h2>🔗 Contesti intelligenti</h2>
+
+${
+contexts.length
+?
+contexts.map(c=>`
+
+<div class="item">
+
+<b>${esc(c.title)}</b>
+
+<div class="small">
+${esc(c.description)}
+</div>
+
+<span class="pill">
+Memoria + Evento
+</span>
+
+</div>
+
+`).join('')
+:
+`
+<div class="empty">
+Quando collegheremo una memoria a un evento,
+SECONDO creerà qui il relativo contesto.
+</div>
+`
+}
+
+</section>
+`;
+
+}
+
+function events(a){
+
+const events=get('events',[]);
+
+a.innerHTML=`
+
+<section class="card">
+
+<div class="label">EVENTI</div>
+
+<h2>📅 I tuoi eventi</h2>
+
+${
+events.length
+?
+events.map(e=>`
+
+<div class="item">
+
+<b>${esc(e.title)}</b>
+
+<div class="small">
+${esc(e.when)}
+</div>
+
+<span class="pill">
+🔔 ${esc(e.reminderText)}
+</span>
+
+<span class="pill">
+${e.confirmed?'✅ Confermato':'⚠️ Da verificare'}
+</span>
+
+</div>
+
+`).join('')
+:
+`
+<div class="empty">
+Nessun evento programmato.
+</div>
+`
+}
+
+</section>
+
+<section class="card">
+
+<button
+class="ask"
+style="margin:0"
+onclick="openModal()">
+
+＋ Nuovo evento / memoria
+
+</button>
+
+</section>
+`;
+
+}
+
+function privacy(a){
+
+a.innerHTML=`
+
+<section class="card">
+
+<div class="label">PRIVACY</div>
+
+<h2>🔒 Il controllo è tuo</h2>
+
+<div class="item">
+🎙️ Microfono
+<div class="small">
+Attivato solo quando utilizzi l'ascolto.
+</div>
+</div>
+
+<div class="item">
+📍 Posizione
+<div class="small">
+Non utilizzata nella V1.
+</div>
+</div>
+
+<div class="item">
+☁️ Cloud
+<div class="small">
+Nessun cloud per la memoria V1.
+</div>
+</div>
+
+<div class="item">
+🧠 Memoria
+<div class="small">
+Salvata localmente sul dispositivo.
+</div>
+</div>
+
+<button
+class="secondary"
+onclick="clearMemories()">
+
+Cancella tutte le memorie
+
+</button>
+
+<button
+class="secondary"
+onclick="clearAll()">
+
+Cancella tutti i dati
+
+</button>
+
+</section>
+`;
+
+}
+
+function openModal(){
+
+document.getElementById('modal').style.display='flex';
+
+document.getElementById('input').focus();
+
+}
+
+function closeModal(){
+
+document.getElementById('modal').style.display='none';
+
+}
+
+function processInput(){
+
+const text=
+document.getElementById('input').value.trim();
+
+if(!text)return;
+
+const data=parseInput(text);
+
+if(data.needsConfirmation){
+
+const ok=confirm(
+'Ho capito così:\\n\\n'+
+data.summary+
+'\\n\\nConfermi questa informazione?'
+);
+
+if(!ok){
+closeModal();
+return;
+}
+
+}
+
+const memoryId='m_'+Date.now();
+
+const memory={
+
+id:memoryId,
+
+text:text,
+
+date:new Date().toLocaleString('it-IT'),
+
+person:data.person,
+
+action:data.action,
+
+confidence:data.confidence,
+
+source:'Input dell’utente',
+
+eventId:null
+
+};
+
+const memories=get('memories',[]);
+
+memories.unshift(memory);
+
+set('memories',memories);
+
+if(data.event){
+
+const eventId='e_'+Date.now();
+
+const event={
+
+id:eventId,
+
+title:data.event.title,
+
+when:data.event.when,
+
+reminderText:data.event.reminderText,
+
+confirmed:data.confirmed,
+
+sourceMemoryId:memoryId
+
+};
+
+const events=get('events',[]);
+
+events.unshift(event);
+
+set('events',events);
+
+memory.eventId=eventId;
+
+set('memories',memories);
+
+createContext(
+data.event.title,
+data.person,
+data.action,
+eventId,
+memoryId
+);
+
+}
+
+closeModal();
+
+tab='Memoria';
+
+render();
+
+}
+
+function parseInput(text){
+
+const low=text.toLowerCase();
+
+let person='';
+
+const personMatch=
+text.match(
+/\b(?:con|a|da|per)\s+([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ]+)\b/
+);
+
+if(personMatch)
+person=personMatch[1];
+
+let action='';
+
+if(/\bchiamare\b|\bchiama\b/.test(low))
+action='chiamare';
+
+else if(/\bincontrare\b|\bincontro\b/.test(low))
+action='incontrare';
+
+else if(/\bpagare\b|\bpagamento\b/.test(low))
+action='pagare';
+
+else if(/\bportare\b/.test(low))
+action='portare';
+
+let day='';
+
+if(low.includes('domani'))day='Domani';
+else if(low.includes('oggi'))day='Oggi';
+else if(low.includes('venerdì'))day='Venerdì';
+else if(low.includes('sabato'))day='Sabato';
+else if(low.includes('domenica'))day='Domenica';
+else if(low.includes('lunedì'))day='Lunedì';
+else if(low.includes('martedì'))day='Martedì';
+else if(low.includes('mercoledì'))day='Mercoledì';
+else if(low.includes('giovedì'))day='Giovedì';
+
+const timeMatch=
+text.match(/\b(?:alle|ore)\s*(\d{1,2})(?::(\d{2}))?\b/i);
+
+let hour=
+timeMatch?parseInt(timeMatch[1]):null;
+
+let minute=
+timeMatch&&timeMatch[2]
+?parseInt(timeMatch[2])
+:0;
+
+let event=null;
+
+let confirmed=true;
+
+let needsConfirmation=false;
+
+if(day && hour!==null){
+
+if(
+low.includes('diciamo')||
+low.includes('forse')||
+low.includes('credo')||
+low.includes('circa')||
+low.includes('più o meno')
+){
+
+confirmed=false;
+needsConfirmation=true;
+
+}
+
+let title='Impegno';
+
+if(low.includes('assemblea'))
+title='Assemblea di condominio';
+
+else if(low.includes('dentista'))
+title='Appuntamento dal dentista';
+
+else if(action==='chiamare')
+title='Chiamare'+
+(person?' '+person:'');
+
+else if(action==='incontrare')
+title='Incontro'+
+(person?' con '+person:'');
+
+const totalMinutes=
+hour*60+minute;
+
+const reminder=
+(totalMinutes-10+1440)%1440;
+
+event={
+
+title:title,
+
+when:
+day+' — '+
+String(hour).padStart(2,'0')+
+':'+
+String(minute).padStart(2,'0'),
+
+reminderText:
+String(Math.floor(reminder/60)).padStart(2,'0')+
+':'+
+String(reminder%60).padStart(2,'0')
+
+};
+
+}
+
+return{
+
+person:person,
+
+action:action,
+
+confidence:
+confirmed?'Certa':'Da verificare',
+
+confirmed:confirmed,
+
+needsConfirmation:needsConfirmation,
+
+event:event,
+
+summary:event
+?
+event.title+
+'\\n'+
+event.when+
+'\\nPromemoria: '+
+event.reminderText
+:
+'Salvare questa informazione in memoria?'
+
+};
+
+}
+
+function createContext(
+title,
+person,
+action,
+eventId,
+memoryId
+){
+
+const contexts=get('contexts',[]);
+
+contexts.unshift({
+
+id:'c_'+Date.now(),
+
+title:title,
+
+description:
+(person?'Persona: '+person+'. ':'')+
+(action?'Azione: '+action+'. ':'')+
+'Informazione collegata all’evento.',
+
+eventId:eventId,
+
+memoryId:memoryId
+
+});
+
+set('contexts',contexts);
+
+}
+
+function showWhy(id){
+
+const memories=get('memories',[]);
+
+const memory=
+memories.find(x=>x.id===id);
+
+if(!memory)return;
+
+document.getElementById('whyContent').innerHTML=`
+
+<div class="card">
+
+<b>
+SECONDO ti mostra questa informazione perché
+sei stato tu a salvarla.
+</b>
+
+<div class="small" style="margin-top:12px">
+
+<strong>Fonte:</strong>
+${esc(memory.source)}
+
+<br>
+
+<strong>Salvata:</strong>
+${esc(memory.date)}
+
+<br>
+
+<strong>Affidabilità:</strong>
+${esc(memory.confidence)}
+
+${
+memory.eventId
+?
+`
+<br><br>
+🔗 Questa memoria è collegata a un evento.
+`
+:''
+}
+
+</div>
+
+</div>
+`;
+
+document.getElementById('whyModal').style.display='flex';
+
+}
+
+function closeWhy(){
+
+document.getElementById('whyModal').style.display='none';
+
+}
+
+function forget(id){
+
+if(!confirm('Dimenticare questa memoria?'))
+return;
+
+const memories=get('memories',[]);
+
+set(
+'memories',
+memories.filter(m=>m.id!==id)
+);
+
+render();
+
+}
+
+function clearMemories(){
+
+if(
+confirm('Cancellare tutte le memorie?')
+){
+
+localStorage.removeItem('memories');
+
+render();
+
+}
+
+}
+
+function clearAll(){
+
+if(
+confirm('Cancellare tutti i dati di SECONDO?')
+){
+
+localStorage.clear();
+
+init();
+
+}
+
+}
+
+function esc(value){
+
+return String(value||'')
+.replace(/[&<>'"]/g,function(c){
+
+return{
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+"'":'&#39;',
+'"':'&quot;'
+
+}[c];
+
+});
+
+}
+
+function listenOrOpen(){
+
+if(
+!('webkitSpeechRecognition' in window||
+'SpeechRecognition' in window)
+){
+
+openModal();
+
+return;
+
+}
+
+const Recognition=
+window.SpeechRecognition||
+window.webkitSpeechRecognition;
+
+const recognition=
+new Recognition();
+
+recognition.lang='it-IT';
+
+recognition.interimResults=false;
+
+recognition.onresult=function(e){
+
+document.getElementById('input').value=
+e.results[0][0].transcript;
+
+processInput();
+
+};
+
+recognition.onerror=function(){
+
+openModal();
+
+};
+
+recognition.start();
+
+}
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker.register(
+'/SECONDO/sw.js',
+{scope:'/SECONDO/'}
+);
+
+}
+
+init();
+
 </script>
-</body></html>
+
+<script>
+
+let deferredInstallPrompt=null;
+
+window.addEventListener(
+'beforeinstallprompt',
+function(e){
+
+e.preventDefault();
+
+deferredInstallPrompt=e;
+
+document.getElementById('installBtn').style.display='block';
+
+}
+);
+
+async function installSECONDO(){
+
+if(!deferredInstallPrompt){
+
+alert(
+'Apri SECONDO direttamente in Chrome e ricarica la pagina.'
+);
+
+return;
+
+}
+
+deferredInstallPrompt.prompt();
+
+await deferredInstallPrompt.userChoice;
+
+deferredInstallPrompt=null;
+
+}
+
+</script>
+
+</body>
+</html>
