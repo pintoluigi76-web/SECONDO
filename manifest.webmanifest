@@ -1,19 +1,19 @@
 {
-  "id": "./",
+  "id": "/SECONDO/",
   "name": "SECONDO - Assistente personale",
   "short_name": "SECONDO",
-  "description": "Il tuo secondo cervello: memoria, contesti, eventi e promemoria.",
-  "start_url": "./",
-  "scope": "./",
+  "description": "Memoria, contesti, eventi e promemoria personali.",
+  "start_url": "/SECONDO/",
+  "scope": "/SECONDO/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait",
   "theme_color": "#0b0f14",
   "background_color": "#0b0f14",
   "lang": "it-IT",
-  "prefer_related_applications": false,
   "icons": [
-    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    {"src":"/SECONDO/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/SECONDO/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"maskable"},
+    {"src":"/SECONDO/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"/SECONDO/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
   ]
 }
